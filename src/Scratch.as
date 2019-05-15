@@ -1947,7 +1947,7 @@ public class Scratch extends Sprite {
       }
 
 	public function SaveToServer(done:Function = null){
-		runtime.stopAll();
+		//runtime.stopAll();
 		//app.addLoadProgressBox('Uploading...')
 		saveStatusClicked(true)
 	}
