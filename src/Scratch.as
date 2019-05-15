@@ -551,9 +551,9 @@ public class Scratch extends Sprite {
 		log(LogLevel.ERROR, msg, extra_data);
 	}
 
-	public function loadProjectFailed():void {
-		loadInProgress = false;
-	}
+	// public function loadProjectFailed():void {
+	// 	loadInProgress = false;
+	// }
 
 	public function jsThrowError(s:String):void {
 		// Throw the given string as an error in the browser. Errors on the production site are logged.
@@ -710,6 +710,34 @@ public class Scratch extends Sprite {
          this.saveStatusAlert = param2;
          this.topBar.setSaveStatus(this.saveStatus,this.saveStatusAlert,this.saveTimerContext);
       }
+
+	 private function leavePage(param1:*) : void
+      {
+         var ignore:* = param1;
+         ExternalInterface.call("window.eval","document.location.hash = \"player\";");
+         setTimeout(function():void
+         {
+            DialogBox.notify("Error!","The project failed to load\nand the Scratch Team has been notified.",stage,false,leavePage);
+         },100);
+      }
+
+	public function loadProjectFailed() : void
+      {
+         super.loadProjectFailed();
+         var _loc1_:Shape = new Shape();
+         _loc1_.graphics.beginFill(13421772);
+         _loc1_.graphics.drawRect(-1000,-1000,10000,10000);
+         stage.addChild(_loc1_);
+         if(editMode)
+         {
+            DialogBox.notify("Error!","The project failed to load\nand the Scratch Team has been notified.\nPress OK to leave this page.",stage,false,this.leavePage);
+         }
+         else
+         {
+            DialogBox.notify("Error!","The project failed to load\nand the Scratch Team has been notified.",stage,false,this.leavePage);
+         }
+      }
+      
 
 	private function refreshUserAndProject() : void
 	{
@@ -1950,6 +1978,7 @@ public class Scratch extends Sprite {
          catch(e:*)
          {
             removeLoadProgressBox();
+			this.loadProjectFailed();
          }
 	}
 
