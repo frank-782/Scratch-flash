@@ -723,7 +723,7 @@ public class Scratch extends Sprite {
 
 	public function loadProjectFailed() : void
       {
-         super.loadProjectFailed();
+         //super.loadProjectFailed();
          var _loc1_:Shape = new Shape();
          _loc1_.graphics.beginFill(13421772);
          _loc1_.graphics.drawRect(-1000,-1000,10000,10000);
