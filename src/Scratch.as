@@ -466,11 +466,7 @@ public class Scratch extends Sprite {
 		{
 			return;
 		}
-		if(projectOwner.length > 0 && projectOwner != this.userName)
-		{
-			//this.remixButtonPressed(null);
-		}
-		else if(this.shouldSave())
+		if(this.shouldSave())
 		{
 			this.saveProject(true);
 		}
@@ -911,11 +907,12 @@ public class Scratch extends Sprite {
          };
          if(this.shouldSave() && this.canSave)
          {
-            this.SaveToServer(showProjectPage);
+            this.SaveToServer();
+			 showProjectPage();
          }
          else
          {
-            showProjectPage();
+			 showProjectPage();
          }
       }
       
@@ -1921,39 +1918,10 @@ public class Scratch extends Sprite {
          return this.editMode;
       }
 
-	public function SaveToServer(done:Function){
+	public function SaveToServer(done:Function = null){
 		runtime.stopAll();
-		var PojIO:ProjectIO = new ProjectIO(app);
 		//app.addLoadProgressBox('Uploading...')
 		saveStatusClicked(true)
-		PojIO.convertSqueakSounds(stagePane,function():void
-         {
-		// var proj:ScratchStage = stagePane
-		// delete proj.info.penTrails; // remove the penTrails bitmap saved in some old projects' info
-		// proj.savePenLayer();
-		// proj.updateInfo();
-		// proj.allObjects();
-		// var jsonData:ByteArray = new ByteArray();
-		// jsonData.writeUTFBytes(util.JSON.stringify(proj));
-		//externalCall("console.log('" + jsonData +"')");
-		
-		// new ProjectIO(this).uploadProject(stagePane,projectID,null,function () {
-		// 	DialogBox.notify('','Your project has been uploaded')
-		// });
-		// app.Upload(AssetServer + '/UploadSb2.php?id='+projectID,data,function(){
-		// var request:URLRequest = new URLRequest(AssetServer + '/UploadProject.php?id='+projectID);
-		// request.method = URLRequestMethod.POST; 
-		// var variables:URLVariables = new URLVariables(); 
-		// request.data = jsonData;
-		// var requestor:URLLoader = new URLLoader(); 
-    	// requestor.load(request); 
-		
-		// requestor.addEventListener( Event.COMPLETE, function():void{
-		// 	//DialogBox.notify('','Your project has been uploaded')
-		// 	app.removeLoadProgressBox();
-		// 	app.clearSaveNeeded();
-		// 	done();
-		}); 
 	}
 
 	public function LoadProject(id:String,title:String):void{
