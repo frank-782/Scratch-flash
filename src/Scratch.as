@@ -642,6 +642,7 @@ public class Scratch extends Sprite {
 
 	protected function saveProject(param1:Boolean, param2:Function = null) : void
 	{
+		if(isOffline) return;
 		var thumbnailSaved:Function = null;
 		var uploadSucceeded:Function = null;
 		var saveStartTime:int = 0;
@@ -1011,6 +1012,7 @@ public class Scratch extends Sprite {
 		SCRATCH::allow3d {
 			if (isIn3D) render3D.onStageResize();
 		}
+		this.jsSetPresentationMode(enterPresentation);
 	}
 
 	private function keyDown(evt:KeyboardEvent):void {
@@ -1420,27 +1422,35 @@ public class Scratch extends Sprite {
 	}
 
 	protected function addFileMenuItems(b:*, m:Menu):void {
-		if (canSave){
-			m.addItem('Save',save);
+		if (!isOffline){
+			if (canSave){
+				m.addItem('Save',save);
+			}else{
+				m.addItem('Save',null,false);
+			}
+			if (canRemix){
+				m.addItem('Remix',null)
+			}else{
+				m.addItem('Remix',null,false)
+			}
+			m.addItem('Load from your computer', runtime.selectProjectFile);
+			if (canSaveTolocal){
+				m.addItem('Save to your computer', exportProjectToFile);
+			}else{
+				m.addItem('Save to your computer',null,false);
+			}
 		}else{
-			m.addItem('Save',null,false);
+			m.addItem('New', createNewProject);
+			m.addLine();
+			m.addItem('Open', runtime.selectProjectFile);
+			m.addItem('Save', exportProjectToFile);
+			m.addLine();
 		}
-		if (canRemix){
-			m.addItem('Remix',null)
-		}else{
-			m.addItem('Remix',null,false)
+		if (runtime.recording || runtime.ready==ReadyLabel.COUNTDOWN || runtime.ready==ReadyLabel.READY) {
+			m.addItem('Stop Video', runtime.stopVideo);
+		} else {
+			m.addItem('Record Project Video', runtime.exportToVideo);	
 		}
-		m.addItem('Load from your computer', runtime.selectProjectFile);
-		if (canSaveTolocal){
-			m.addItem('Save to your computer', exportProjectToFile);
-		}else{
-			m.addItem('Save to your computer',null,false);
-		}
-	//	if (runtime.recording || runtime.ready==ReadyLabel.COUNTDOWN || runtime.ready==ReadyLabel.READY) {
-	//		m.addItem('Stop Video', runtime.stopVideo);
-	//	} else {
-	//		m.addItem('Record Project Video', runtime.exportToVideo);	
-	//	}
 		if (canUndoRevert()) {
 			m.addItem('Undo Revert', undoRevert);
 		} else if (canRevert()) {
@@ -1506,10 +1516,11 @@ public class Scratch extends Sprite {
 
 	protected function createNewProjectAndThen(callback:Function = null):void {
 		function clearProject():void {
-			startNewProject('', '');
-			//setProjectName('Scratch作品');
+			startNewProject('', 'Scratch作品');
 			onNewProject();
-			LoadProject('blank','Scratch作品')
+			if (!isOffline){
+			 	LoadProject('blank','Scratch作品');
+			}
 			topBarPart.refresh();
 			stagePart.refresh();
 			if (callback != null) callback();
@@ -1628,8 +1639,6 @@ public class Scratch extends Sprite {
 		d.addTitle('Version Details');
 		d.addField('GPU enabled', kGitHashFieldWidth, SCRATCH::allow3d);
 		d.addField('scratch-flash', kGitHashFieldWidth, SCRATCH::revision);
-		//d.addField('scratch-flash', kGitHashFieldWidth,'2e4a402');
-		d.addField('Version',kGitHashFieldWidth,'2.0.3')
 		return d;
 	}
 
@@ -2000,6 +2009,18 @@ public class Scratch extends Sprite {
 		})
 	}
 
+	public function jsSetPresentationMode(param1:Boolean) : void
+      {
+         var _loc2_:Boolean = false;
+         if(jsEnabled)
+         {
+            _loc2_ = ExternalInterface.call("JSsetPresentationMode",param1);
+            if(!_loc2_)
+            {
+               jsThrowError("Calling JSsetPresentationMode() failed.");
+            }
+         }
+      }
 
 }
 }

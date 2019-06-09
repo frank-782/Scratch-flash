@@ -76,9 +76,10 @@ public class TopBarPart extends UIPart {
 		languageButton.isMomentary = true;
 		this.addTextButtons();
 		this.addToolButtons();
-		this.addProjectButton();
-		this.addSaveStatus();
-
+		if(!Scratch.app.isOffline){
+			this.addProjectButton();
+			this.addSaveStatus();
+		}
 		if (Scratch.app.isExtensionDevMode) {
 			addChild(logoButton = new IconButton(app.logoButtonPressed, Resources.createBmp('scratchxlogo')));
 			const desiredButtonHeight:Number = 20;
@@ -108,7 +109,9 @@ public class TopBarPart extends UIPart {
 		if (fileMenu.parent) {
 			removeChild(fileMenu);
 			removeChild(editMenu);
+			if(!Scratch.app.isOffline){
 			removeChild(this.projectPageButton);
+			}
 		}
 	}
 
@@ -116,7 +119,9 @@ public class TopBarPart extends UIPart {
 		removeTextButtons();
 		addTextButtons();
 		if (offlineNotice) offlineNotice.text = Translator.map('Offline Editor');
-		addProjectButton();
+		if(!Scratch.app.isOffline){
+			addProjectButton();
+		}
 		refresh();
 	}
 
